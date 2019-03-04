@@ -24,9 +24,10 @@ from PySide2.QtGui import QColor, QPainter
 QPainter-Выполняет низкоуровневое рисование на виджетах и других устройствах рисования
 
 """
-from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QVBoxLayout,
+from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QVBoxLayout, QGridLayout,
                                QHeaderView,
-                               QMainWindow, QSizePolicy, QTableView, QWidget, QSplitter)
+                               QMainWindow, QSizePolicy, QTableView, QWidget, QSplitter,
+                               QTabWidget)
 """ 
 Класс QAction предоставляет абстрактное действие пользовательского интерфейса, которое может быть вставлено в виджеты.
 Класс QApplication руководит управляющей логикой ГПИ(граф. пользоват. интерфейс) и основными настройками
@@ -131,6 +132,8 @@ class Widget(QWidget):
     """
     def __init__(self, data):
         QWidget.__init__(self)
+
+        
         """ получение модели """
         self.model = CustomTableModel(data)
         """переходим в класс CustomTableModel и создаем объект-таблицу, model-часть класса с помощью которого работаем с данными,имя поля-model  """
@@ -155,39 +158,40 @@ class Widget(QWidget):
         модуль QtChart предоставляет множество типов графиков и опций для графического представления данных. 
         """
 
-        self.chart1 = QtCharts.QChart()
+
+        chart1 = QtCharts.QChart()
         """нас устраивает класс QChart полностью, доп методы и консрукторы не нужны """
-        self.chart1.setAnimationOptions(QtCharts.QChart.AllAnimations)
+        chart1.setAnimationOptions(QtCharts.QChart.AllAnimations)
         """ установить параметры анимации, запускается рисование """
-        self.add_series("Значение", [0,1] ,self.chart1)
+        self.add_series("Значение", [0,1] ,chart1)
         
         """подготовка вкладки на кот размещена диаграмма """
         size = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         size.setHorizontalStretch(4)
         #-----------------------------------------
-        self.chart_view1 = QtCharts.QChartView(self.chart1)
+        chart_view1 = QtCharts.QChartView(chart1)
         """подготовка визуализации продолжается """
-        self.chart_view1.setRenderHint(QPainter.Antialiasing)
+        chart_view1.setRenderHint(QPainter.Antialiasing)
         
         #self.chart_view1.setSizePolicy(size)
         minWidth = 400
-        self.chart_view1.setMinimumWidth(minWidth)
+        chart_view1.setMinimumWidth(minWidth)
         
         
         #-----------------------------------------------------
-        self.chart2 = QtCharts.QChart()
-        self.chart2.setAnimationOptions(QtCharts.QChart.AllAnimations)
-        self.add_series("Глубина", [0,2],self.chart2)#данные для каждого графика
-        self.chart_view2 = QtCharts.QChartView(self.chart2)
+        chart2 = QtCharts.QChart()
+        chart2.setAnimationOptions(QtCharts.QChart.AllAnimations)
+        self.add_series("Глубина", [0,2], chart2)#данные для каждого графика
+        chart_view2 = QtCharts.QChartView(chart2)
         """подготовка визуализации продолжается """
-        self.chart_view2.setRenderHint(QPainter.Antialiasing)
+        chart_view2.setRenderHint(QPainter.Antialiasing)
         """ QWidget расположение """
         """ правое расположение """
         #self.chart_view2.setSizePolicy(size)
-        self.chart_view2.setMinimumWidth(minWidth)
+        chart_view2.setMinimumWidth(minWidth)
 
-        self.main_layout = QHBoxLayout()
-        self.splitter = QSplitter()
+        main_layout = QHBoxLayout()
+        splitter = QSplitter()
 
 
         dateColumn = 0
@@ -195,8 +199,13 @@ class Widget(QWidget):
         depthsColumn = 2
         
         xDates = self.getDateAsCategoricalColumn(dateColumn)
-        yMagnitudes = self.getFloatColumn(magColumn)
+        yMagnitudes = self.getFloatColumn(magColumn)        
         yDepths = self.getFloatColumn(depthsColumn)
+
+        # print("ymags")
+        # print(yMagnitudes)
+        # print("ydepths")
+        # print(yDepths)
 
         
         bc1 = self.createBarCharts(xDates, yMagnitudes, yDepths)
@@ -206,31 +215,77 @@ class Widget(QWidget):
 
                 
         chartViewsHbox = QHBoxLayout()
-        chartViewsHbox.addWidget(self.chart_view1)        
-        chartViewsHbox.addWidget(self.chart_view2)
+        chartViewsHbox.addWidget(chart_view1)        
+        chartViewsHbox.addWidget(chart_view2)
 
         vbox = QVBoxLayout()
         vbox.addLayout(chartViewsHbox)
         vbox.addWidget(bar1ChartView)
 
-        #self.main_layout.addLayout(vbox)
-
         vboxWidget = QWidget()
         vboxWidget.setLayout(vbox)
-        self.splitter.addWidget(vboxWidget)
+        splitter.addWidget(vboxWidget)
 
-        #self.main_layout.addWidget(self.table_view)
-        #КУДА.addWidget(ЧТО)
+        splitter.addWidget(self.table_view)
 
-        self.splitter.addWidget(self.table_view)
-
-        self.main_layout.addWidget(self.splitter)
+        main_layout.addWidget(splitter)
         
-        self.setLayout(self.main_layout) # установить макет на QWidget """
-        #-----------------------------------------------------
+        # self.setLayout(main_layout) # установить макет на QWidget """
+
+        mainWidget = QWidget()
+        mainWidget.setLayout(main_layout)
+
+        tabWidget = QTabWidget()
+        tabWidget.addTab(mainWidget, "travis scott")
+
+        splineTab = self.createSplineChart(data)
+        tabWidget.addTab(splineTab, "spline chart")
+
+        grid = QGridLayout()
+        grid.addWidget(tabWidget)
+
+        self.setLayout(grid)
+
+
+                
         """ левое расположение """
         size.setHorizontalStretch(1)
         self.table_view.setSizePolicy(size)
+
+    def createSplineChart(self, data):
+        series = QtCharts.QSplineSeries()
+
+        series.setName("spline series")
+
+        for x in data:
+            print(x)
+            series.append(x[0], x[1])
+        """
+        series.append(0, 6);
+        series.append(2, 4);
+        series.append(3, 8);
+        series.append(7, 4);
+        series.append(10, 5);
+        series.append(11, 1)  
+        series.append(13, 3)  
+        series.append(17, 6)  
+        series.append(18, 3) 
+        series.append(20, 2)"""
+
+        chart = QtCharts.QChart()
+        chart.legend().hide()
+        chart.addSeries(series)
+        chart.setTitle("Spline chart")
+        chart.createDefaultAxes()
+        chart.axes(Qt.Vertical)[0].setRange(0, 10)
+
+        chartView = QtCharts.QChartView(chart)
+        chartView.setRenderHint(QPainter.Antialiasing)
+
+        return chartView
+        
+        
+        
     def createBarCharts(self, x, y1, y2):
         barSet1 = QtCharts.QBarSet("Magnitude")
         barSet1.append(y1)
@@ -455,7 +510,7 @@ if __name__ == "__main__":
     # data = read_data("C:/Users/79687/Downloads/all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
     # data = read_data("C:/Users/79687/Downloads/all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
     data = read_data("all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
-    
+    # print(type(data[0]))
 
     # Qt Application
     app = QApplication(sys.argv)
