@@ -434,7 +434,11 @@ class MainWindow(QMainWindow):
         # Размеры окна
         geometry = app.desktop().availableGeometry(self)
         # self.setFixedSize(geometry.width() * 0.8, geometry.height() * 0.9)
-        self.setFixedSize(geometry.width(), geometry.height() * 0.9)
+        # self.setFixedSize(geometry.width(), geometry.height() * 0.9)
+
+
+        self.resize(geometry.size() * 0.7);
+        
         self.setCentralWidget(widget)
 
     @Slot()#что это
