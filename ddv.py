@@ -257,9 +257,15 @@ class Widget(QWidget):
 
         series.setName("spline series")
 
-        for x in data:
-            print(x)
-            series.append(x[0], x[1])
+        n = len(data[0])
+
+        # конвертируем столбец time в float, чтобы можно было использовать его как значения оси x
+        for i in range(n):
+            # print(x)
+            time = data[0][i]
+            magnitude = data[1][i]
+            series.append(float(time.toMSecsSinceEpoch()), magnitude)
+            
         """
         series.append(0, 6);
         series.append(2, 4);
