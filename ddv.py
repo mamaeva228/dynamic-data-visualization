@@ -531,36 +531,46 @@ class MainWindow(QMainWindow):
 
 # считывает данные для splineChart из searchEngineShares.csv
 def getSplineChartData(fname):
-    # Считать содержимое CSV 
+    res = []
+    
     df = pd.read_csv(fname)
-    """df-переменная содержащая данные файла, в нее их закачивает метод read_csv(), если csv изменить Exel то csv не работает
-    fname-параметр, у нас в программе это путь к файлу
-    """
+    # return df
+
+    # получает 0-й столбец df (временные метки)
+    timeStamps = df.iloc[:, 0]
+    timeStamps = [QDateTime.fromString(x, "yyyy-MM")
+                  for x in timeStamps]
+
+
+    values = []
+    names = []
+
+    for x in df.iloc[:, 1:]:
+        values.append(list(df[x]))
+        names.append(x)
 
     # Удалить неправильные величины 
     # df = df.drop(df[df.mag < 0].index)
     
-    magnitudes = df["Date"]
+    # magnitudes = df["Date"]
     
 
     #  Мой местный часовой пояс 
-    timezone = QTimeZone(b"Europe/Berlin")
+    # timezone = QTimeZone(b"Europe/Berlin")
 
     # Получить временную метку, преобразованную в наш часовой пояс
-    times = df["time"].apply(lambda x: transform_date(x, timezone))
-    """запускается функция transform_date """
-
-    depth=df["depth"]
-    """ в depth записываются значения из столбца"depth" """
-
-    return times, magnitudes, depth
+    # times = df["time"].apply(lambda x: transform_date(x, timezone))
+    
+    # depth=df["depth"]
+        
+    # return times, magnitudes, depth
+    return timeStamps, values, names
 """сформировалось 3 списка times, magnitudes, depth -остальные столбцы игнорируются"""
 
 def runApp(data):
     app = QApplication(sys.argv)
     widget = Widget(data) # мб сюда как парметр передавать столбцы кот для граф нужны
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
-
     
     window = MainWindow(widget)
 
@@ -578,7 +588,9 @@ if __name__ == "__main__":
     data = read_data("all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
     # print(type(data[0]))
 
+    splineChartData = getSplineChartData(
+        "search_engine-ww-monthly-201802-201902.csv")
 
-    runApp(data)
+    # runApp(data)
     
     
