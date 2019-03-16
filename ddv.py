@@ -252,6 +252,14 @@ class Widget(QWidget):
         size.setHorizontalStretch(1)
         self.table_view.setSizePolicy(size)
 
+    # createSplineChart(self, data) => QChartView
+    # демонстрирует создание splineCharts
+    # по горизонтальной оси принимаем QDateTime (xTimestamps)
+    # и два lists с точками и названиями каждой series
+    # data:
+    # [ xTimestamps,
+    #  [serie1Points, serie2Points, ..]
+    #  [serie1Name, serie2Name, ..] ]
     def createSplineChart(self, data):
         series = QtCharts.QSplineSeries()
 
@@ -264,26 +272,38 @@ class Widget(QWidget):
             # print(x)
             time = data[0][i]
             magnitude = data[1][i]
-            series.append(float(time.toMSecsSinceEpoch()), magnitude)
-            
-        """
-        series.append(0, 6);
-        series.append(2, 4);
-        series.append(3, 8);
-        series.append(7, 4);
-        series.append(10, 5);
-        series.append(11, 1)  
-        series.append(13, 3)  
-        series.append(17, 6)  
-        series.append(18, 3) 
-        series.append(20, 2)"""
+            series.append(float(time.toMSecsSinceEpoch()), magnitude)          
+        
 
         chart = QtCharts.QChart()
         chart.legend().hide()
         chart.addSeries(series)
-        chart.setTitle("Spline chart")
-        chart.createDefaultAxes()
-        chart.axes(Qt.Vertical)[0].setRange(0, 10)
+        chart.setTitle("Spline chart (magnitude vs. time)")
+        
+        # chart.createDefaultAxes()
+        
+
+
+        axisX = QtCharts.QDateTimeAxis();
+        # axisX.setTickCount(10);
+        
+        #axisX.setFormat("MMM yyyy");
+        #axisX.setFormat("yyyy/MM/dd hh:mm:ss:zzz");
+        axisX.setFormat("hh:mm:ss:zzz");
+        
+        axisX.setTitleText("Time");
+        chart.addAxis(axisX, Qt.AlignBottom);
+        series.attachAxis(axisX);
+
+        axisY = QtCharts.QValueAxis();
+        axisY.setLabelFormat("%.2f");
+        axisY.setTitleText("Magnitude");
+        chart.addAxis(axisY, Qt.AlignLeft);
+
+        chart.axes(Qt.Vertical)[0].setRange(-2.5, 7.5)
+        
+        series.attachAxis(axisY);
+        
 
         chartView = QtCharts.QChartView(chart)
         chartView.setRenderHint(QPainter.Antialiasing)
@@ -493,11 +513,12 @@ class MainWindow(QMainWindow):
         self.status.showMessage("Data loaded and plotted")
 
         # Размеры окна
+        app = QApplication.instance()
         geometry = app.desktop().availableGeometry(self)
         # self.setFixedSize(geometry.width() * 0.8, geometry.height() * 0.9)
         # self.setFixedSize(geometry.width(), geometry.height() * 0.9)
 
-
+        
         self.resize(geometry.size() * 0.7);
         
         self.setCentralWidget(widget)
@@ -506,6 +527,45 @@ class MainWindow(QMainWindow):
     def exit_app(self, checked):
         sys.exit()
 
+
+
+# считывает данные для splineChart из searchEngineShares.csv
+def getSplineChartData(fname):
+    # Считать содержимое CSV 
+    df = pd.read_csv(fname)
+    """df-переменная содержащая данные файла, в нее их закачивает метод read_csv(), если csv изменить Exel то csv не работает
+    fname-параметр, у нас в программе это путь к файлу
+    """
+
+    # Удалить неправильные величины 
+    # df = df.drop(df[df.mag < 0].index)
+    
+    magnitudes = df["Date"]
+    
+
+    #  Мой местный часовой пояс 
+    timezone = QTimeZone(b"Europe/Berlin")
+
+    # Получить временную метку, преобразованную в наш часовой пояс
+    times = df["time"].apply(lambda x: transform_date(x, timezone))
+    """запускается функция transform_date """
+
+    depth=df["depth"]
+    """ в depth записываются значения из столбца"depth" """
+
+    return times, magnitudes, depth
+"""сформировалось 3 списка times, magnitudes, depth -остальные столбцы игнорируются"""
+
+def runApp(data):
+    app = QApplication(sys.argv)
+    widget = Widget(data) # мб сюда как парметр передавать столбцы кот для граф нужны
+    """data-данные ф-ции read_data, тоесть 3 столбца из файла """
+
+    
+    window = MainWindow(widget)
+
+    window.show()    
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     """ выполнение прог-мы начинается отсюда"""
@@ -518,17 +578,7 @@ if __name__ == "__main__":
     data = read_data("all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
     # print(type(data[0]))
 
-    # Qt Application
-    app = QApplication(sys.argv)
-    """запускает окно, его определит параметр sys.argv """
-    # QWidget
-    widget = Widget(data)# мб сюда как парметр передавать столбцы кот для граф нужны
-    """data-данные ф-ции read_data, тоесть 3 столбца из файла """
-    # QMainWindow using QWidget as central widget
-    window = MainWindow(widget)
 
-    window.show()
-    """рисует все на экране """
-    sys.exit(app.exec_())
-    """осуществляет процесс корректного закрытия приложения """
-
+    runApp(data)
+    
+    
