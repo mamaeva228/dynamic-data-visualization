@@ -130,7 +130,7 @@ class Widget(QWidget):
     Виджет - это элементарный объект пользовательского интерфейса:
     он получает события мыши, клавиатуры и другие события от оконной системы и рисует свое изображение на экране.
     """
-    def __init__(self, data):
+    def __init__(self, data, splineChartData):
         QWidget.__init__(self)
 
         
@@ -238,7 +238,7 @@ class Widget(QWidget):
         tabWidget = QTabWidget()
         tabWidget.addTab(mainWidget, "travis scott")
 
-        splineTab = self.createSplineChart(data)
+        splineTab = self.createSplineChart(splineChartData)
         tabWidget.addTab(splineTab, "spline chart")
 
         grid = QGridLayout()
@@ -261,49 +261,69 @@ class Widget(QWidget):
     #  [serie1Points, serie2Points, ..]
     #  [serie1Name, serie2Name, ..] ]
     def createSplineChart(self, data):
-        series = QtCharts.QSplineSeries()
-
-        series.setName("spline series")
-
-        n = len(data[0])
-
-        # конвертируем столбец time в float, чтобы можно было использовать его как значения оси x
-        for i in range(n):
-            # print(x)
-            time = data[0][i]
-            magnitude = data[1][i]
-            series.append(float(time.toMSecsSinceEpoch()), magnitude)          
-        
 
         chart = QtCharts.QChart()
-        chart.legend().hide()
-        chart.addSeries(series)
-        chart.setTitle("Spline chart (magnitude vs. time)")
-        
-        # chart.createDefaultAxes()
-        
+        # chart.legend().hide()        
+        chart.setTitle("Spline chart (market shares)")
 
-
+        
         axisX = QtCharts.QDateTimeAxis();
         # axisX.setTickCount(10);
         
-        #axisX.setFormat("MMM yyyy");
+        axisX.setFormat("MM-yyyy");
         #axisX.setFormat("yyyy/MM/dd hh:mm:ss:zzz");
-        axisX.setFormat("hh:mm:ss:zzz");
+        #axisX.setFormat("hh:mm:ss:zzz");
         
         axisX.setTitleText("Time");
         chart.addAxis(axisX, Qt.AlignBottom);
-        series.attachAxis(axisX);
 
         axisY = QtCharts.QValueAxis();
-        axisY.setLabelFormat("%.2f");
-        axisY.setTitleText("Magnitude");
+        # axisY.setLabelFormat("%.2f");
+        axisY.setTitleText("%");
         chart.addAxis(axisY, Qt.AlignLeft);
 
-        chart.axes(Qt.Vertical)[0].setRange(-2.5, 7.5)
+        # chart.axes(Qt.Vertical)[0].setRange(0, 100)
+        chart.axes(Qt.Vertical)[0].setRange(0, 3)
+
         
-        series.attachAxis(axisY);
         
+
+        
+
+        # seriesFilter = [0, 3, 4, 6]
+        # seriesFilter = [0]
+        seriesFilter = [3, 4, 6, 7, 9, 10]
+
+        valuesToDraw = [data[1][i] for i in seriesFilter]
+        namesToDraw = [data[2][i] for i in seriesFilter]        
+
+
+        for i in range(len(seriesFilter)):
+
+            values = valuesToDraw[i]
+            name = namesToDraw[i]
+        
+            series = QtCharts.QSplineSeries()
+            series.setName(name)
+
+            n = len(values)
+
+            print(values)
+
+             # конвертируем столбец time в float, чтобы можно было использовать его как значения оси x
+            for j in range(n):
+                # print(x)
+                time = data[0][j]                
+                series.append(float(time.toMSecsSinceEpoch()), values[j])
+
+            chart.addSeries(series)
+
+            series.attachAxis(axisX);        
+            series.attachAxis(axisY);
+        
+        
+        # chart.createDefaultAxes()       
+
 
         chartView = QtCharts.QChartView(chart)
         chartView.setRenderHint(QPainter.Antialiasing)
@@ -531,10 +551,7 @@ class MainWindow(QMainWindow):
 
 # считывает данные для splineChart из searchEngineShares.csv
 def getSplineChartData(fname):
-    res = []
-    
     df = pd.read_csv(fname)
-    # return df
 
     # получает 0-й столбец df (временные метки)
     timeStamps = df.iloc[:, 0]
@@ -548,28 +565,14 @@ def getSplineChartData(fname):
     for x in df.iloc[:, 1:]:
         values.append(list(df[x]))
         names.append(x)
-
-    # Удалить неправильные величины 
-    # df = df.drop(df[df.mag < 0].index)
-    
-    # magnitudes = df["Date"]
-    
-
-    #  Мой местный часовой пояс 
-    # timezone = QTimeZone(b"Europe/Berlin")
-
-    # Получить временную метку, преобразованную в наш часовой пояс
-    # times = df["time"].apply(lambda x: transform_date(x, timezone))
-    
-    # depth=df["depth"]
-        
-    # return times, magnitudes, depth
+  
     return timeStamps, values, names
-"""сформировалось 3 списка times, magnitudes, depth -остальные столбцы игнорируются"""
 
-def runApp(data):
+
+def runApp(data,
+           splineChartData):
     app = QApplication(sys.argv)
-    widget = Widget(data) # мб сюда как парметр передавать столбцы кот для граф нужны
+    widget = Widget(data, splineChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -591,6 +594,7 @@ if __name__ == "__main__":
     splineChartData = getSplineChartData(
         "search_engine-ww-monthly-201802-201902.csv")
 
-    # runApp(data)
+    runApp(data,
+           splineChartData)
     
     
