@@ -1,3 +1,8 @@
+import pandas as pd
+
+from PySide2.QtCore import (QDateTime)# Slot
+
+
 # считывает данные для splineChart из searchEngineShares.csv
 def getSplineChartData(fname):
     df = pd.read_csv(fname)
