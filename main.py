@@ -50,7 +50,7 @@ QtGui — компоненты графического интерфейса
 
 """
 
-import ddv.getDataFromCsv
+import ddv.csv
 
 class CustomTableModel(QAbstractTableModel):#CustomTableModel
     def __init__(self, data=None):#Обычно функция определяется с помощью инструкции def
@@ -600,7 +600,7 @@ if __name__ == "__main__":
     data = read_data("all_hour.csv") #НАДО МЕНЯТЬ СЛЭШ С ТАКОГО "/" НА "\" В ЭТОМ ЯЗЫКЕ
     # print(type(data[0]))
 
-    splineChartData = ddv.getDataFromCsv.getSplineChartData(
+    splineChartData = ddv.csv.getSplineChartData(
         "search_engine-ww-monthly-201802-201902.csv")
 
     areaChartData = getAreaChartData("data-cImRg.csv")
