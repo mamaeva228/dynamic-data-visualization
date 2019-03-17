@@ -130,7 +130,9 @@ class Widget(QWidget):
     Виджет - это элементарный объект пользовательского интерфейса:
     он получает события мыши, клавиатуры и другие события от оконной системы и рисует свое изображение на экране.
     """
-    def __init__(self, data, splineChartData):
+    def __init__(self, data,
+                 splineChartData,
+                 areaChartData):
         QWidget.__init__(self)
 
         
@@ -240,6 +242,9 @@ class Widget(QWidget):
 
         splineTab = self.createSplineChart(splineChartData)
         tabWidget.addTab(splineTab, "spline chart")
+
+        # areaTab = self.createAreaChart(areaChartData)
+        # tabWidget.addTab(areaTab, "area chart")
 
         grid = QGridLayout()
         grid.addWidget(tabWidget)
@@ -569,10 +574,32 @@ def getSplineChartData(fname):
     return timeStamps, values, names
 
 
+
+
+def getAreaChartData(fname):
+    df = pd.read_csv(fname)
+
+    # получает 0-й столбец df (временные метки)
+    timeStamps = df.iloc[:, 0]
+    timeStamps = [QDateTime.fromString(x, "yyyy")
+                  for x in timeStamps]
+
+
+    values = []
+    names = []
+
+    for x in df.iloc[:, 1:]:
+        values.append(list(df[x]))
+        names.append(x)
+  
+    return timeStamps, values, names
+
+
 def runApp(data,
-           splineChartData):
+           splineChartData,
+           areaChartData):
     app = QApplication(sys.argv)
-    widget = Widget(data, splineChartData) 
+    widget = Widget(data, splineChartData, areaChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -594,7 +621,11 @@ if __name__ == "__main__":
     splineChartData = getSplineChartData(
         "search_engine-ww-monthly-201802-201902.csv")
 
+    areaChartData = getAreaChartData(
+        "data-cImRg.csv")
+
     runApp(data,
-           splineChartData)
+           splineChartData,
+           areaChartData)
     
     
