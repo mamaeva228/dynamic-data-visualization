@@ -71,3 +71,47 @@ def getScatterChartData(fname):
 def feetInchToCm(s):
     ft, inch = s.split("-")
     return int(ft) * 30 + int(inch) * 2.5
+
+
+
+
+
+# считывает данные для pieChart из refugees-by-asylum.csv
+def getPlotChartData(fname):
+    df = pd.read_csv(fname)
+
+    df = df[["Country Name", "2017"]]
+
+    
+
+    s = df["2017"].sum()
+    threshold = s / 100
+    threshold *= 2
+
+    df = df.loc[df['2017'] > threshold]
+
+    # print(s)
+    # print(df)
+
+    names = list(df["Country Name"])
+    no = list(df["2017"])
+    
+
+    # print(df)
+
+
+    # получает 0-й столбец df (временные метки)
+    # timeStamps = df.iloc[:, 0]
+    # timeStamps = [QDateTime.fromString(x, "yyyy-MM")
+    #              for x in timeStamps]
+
+    #heights = list(df['height'])
+    #weights = list(df['weight'])
+
+    #lbsToKg = 0.453592
+
+    #weights = map(lambda w : w * lbsToKg, weights)
+
+    #return list(map(feetInchToCm, heights)), list(weights)
+
+    return names, no

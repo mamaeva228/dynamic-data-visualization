@@ -10,24 +10,35 @@ import math
 import ddv.csv
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+
     app = QApplication(sys.argv)
 
-    # data = ddv.csv.getScatterChartData("nba_player_data.csv")
+    data = ddv.csv.getPlotChartData("refugees-by-asylum.csv")
     
     series = QtCharts.QPieSeries()
 
-    series.append("Jane", 1)
-    series.append("Joe", 2)
-    series.append("Andy", 3)
-    series.append("Barbara", 4)
-    series.append("Axel", 5)
+    sliceList = list(map(lambda nv: QtCharts.QPieSlice(nv[0], nv[1]),
+                         zip(data[0], data[1])))
 
-    slc = series.slices()[1]
-    slc.setExploded()
-    slc.setLabelVisible()
-    slc.setPen(QPen(Qt.darkGreen, 2))
-    slc.setBrush(Qt.green)
+    #s1 = QtCharts.QPieSlice("Jane", 1)
+    # s2 = QtCharts.QPieSlice("Doe", 2)
+
+    series.append(sliceList)
+    #series.append("Jane", 1)
+    #series.append("Joe", 2)
+    #series.append("Andy", 3)
+    #series.append("Barbara", 4)
+    #series.append("Axel", 5)
+
+    #slc = series.slices()[1]
+    #slc.setExploded()
+    #slc.setLabelVisible()
+    #slc.setPen(QPen(Qt.darkGreen, 2))
+    #slc.setBrush(Qt.green)
+
+    for s in series.slices():
+        s.setLabelVisible()
 
     chart = QtCharts.QChart();
     chart.addSeries(series);
@@ -37,8 +48,11 @@ if __name__ == "__main__":
     chartView = QtCharts.QChartView(chart)
     chartView.setRenderHint(QPainter.Antialiasing);
     
+    
+
     window = QMainWindow() 
     window.setCentralWidget(chartView)
     window.resize(400, 300)
     window.show()
+    
 
