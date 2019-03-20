@@ -248,16 +248,16 @@ class Widget(QWidget):
 
         tabWidget = QTabWidget()
 
-        #tabWidget.addTab(mainWidget, "travis scott")
+        tabWidget.addTab(mainWidget, "travis scott")
 
-        #splineTab = ddv.charts.createSplineChart(splineChartData)
-        #tabWidget.addTab(splineTab, "spline chart")
+        splineTab = ddv.charts.createSplineChart(splineChartData)
+        tabWidget.addTab(splineTab, "spline chart")
 
         #areaTab = ddv.charts.createAreaChart(areaChartData)
         #tabWidget.addTab(areaTab, "area chart")
 
-        #scatterTab = ddv.charts.createScatterChart(scatterChartData)
-        #tabWidget.addTab(scatterTab, "scatter chart")
+        scatterTab = ddv.charts.createScatterChart(scatterChartData)
+        tabWidget.addTab(scatterTab, "scatter chart")
 
         pieTab = ddv.charts.createPieChart(pieChartData)
         tabWidget.addTab(pieTab, "pie chart")
