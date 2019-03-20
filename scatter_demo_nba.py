@@ -14,12 +14,12 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     data = ddv.csv.getScatterChartData("nba_player_data.csv")
-
+    
     chart = QtCharts.QChart()
     
     
     series0 = QtCharts.QScatterSeries()
-    series0.setName("scatter1")
+    series0.setName("height / weight")
     series0.setMarkerShape(QtCharts.QScatterSeries.MarkerShapeCircle)
     series0.setMarkerSize(5.0)    
 
@@ -29,10 +29,6 @@ if __name__ == "__main__":
                      zip(data[0], data[1])))
 
     series0.append(pointsList)
-    #series0.append(2, 4)
-    #series0.append(3, 8)
-    #series0.append(7, 4)    
-    #series0.append(10, 5)
                        
     chartView = QtCharts.QChartView(chart)    
     chartView.setRenderHint(QPainter.Antialiasing)

@@ -41,3 +41,33 @@ def getAreaChartData(fname):
         names.append(x)
   
     return timeStamps, values, names
+
+
+# считывает данные для scatterChart из nba_player_data.csv
+def getScatterChartData(fname):
+    df = pd.read_csv(fname)
+
+    # df = df[:10]
+
+    df = df.loc[df['year_end'] == 2018]
+
+    # print(df)
+
+
+    # получает 0-й столбец df (временные метки)
+    # timeStamps = df.iloc[:, 0]
+    # timeStamps = [QDateTime.fromString(x, "yyyy-MM")
+    #              for x in timeStamps]
+
+    heights = list(df['height'])
+    weights = list(df['weight'])
+
+    lbsToKg = 0.453592
+
+    weights = map(lambda w : w * lbsToKg, weights)
+
+    return list(map(feetInchToCm, heights)), list(weights)
+
+def feetInchToCm(s):
+    ft, inch = s.split("-")
+    return int(ft) * 30 + int(inch) * 2.5

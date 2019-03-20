@@ -139,7 +139,8 @@ class Widget(QWidget):
     """
     def __init__(self, data,
                  splineChartData,
-                 areaChartData):
+                 areaChartData,
+                 scatterChartData):
         QWidget.__init__(self)
 
         
@@ -245,19 +246,20 @@ class Widget(QWidget):
         mainWidget.setLayout(main_layout)
 
         tabWidget = QTabWidget()
-        #tabWidget.addTab(mainWidget, "travis scott")
+        tabWidget.addTab(mainWidget, "travis scott")
 
         splineTab = ddv.charts.createSplineChart(splineChartData)
         tabWidget.addTab(splineTab, "spline chart")
 
         #areaTab = ddv.charts.createAreaChart(areaChartData)
         #tabWidget.addTab(areaTab, "area chart")
+
+        scatterTab = ddv.charts.createScatterChart(scatterChartData)
+        tabWidget.addTab(scatterTab, "scatter chart")
         
 
         grid = QGridLayout()
         grid.addWidget(tabWidget)
-
-        # grid.addWidget(areaTab)
   
         #grid.addWidget(areaTab)
 
@@ -452,7 +454,7 @@ class MainWindow(QMainWindow):
     def __init__(self, widget):
         """конструктор наешго класса, в нем мы запускаем конструктор прописанного класса QMainWindow """
         QMainWindow.__init__(self)
-        self.setWindowTitle("Eartquakes information")
+        self.setWindowTitle("Data Visualization")
         """ Виджет без родительского виджета всегда является независимым окном 
         Для таких виджетов setWindowTitle() и setWindowIcon() устанавливают заголовок окна и иконку"""
 
@@ -495,9 +497,10 @@ class MainWindow(QMainWindow):
 
 def runApp(data,
            splineChartData,
-           areaChartData):
+           areaChartData,
+           scatterChartData):
     app = QApplication(sys.argv)
-    widget = Widget(data, splineChartData, areaChartData) 
+    widget = Widget(data, splineChartData, areaChartData, scatterChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -521,11 +524,15 @@ if __name__ == "__main__":
 
     areaChartData = ddv.csv.getAreaChartData("data-cImRg.csv")
 
+    scatterChartData = ddv.csv.getScatterChartData("nba_player_data.csv")
+
+
     
     #if False:
     if True:
         runApp(data,
                splineChartData,
-               areaChartData)
+               areaChartData,
+               scatterChartData)
     
     

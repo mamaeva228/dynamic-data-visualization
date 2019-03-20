@@ -4,7 +4,6 @@ from PySide2.QtGui import (QPainter, QPen, QLinearGradient,
     QGradient)
 
 
-
 # createSplineChart(self, data) => QChartView
 # демонстрирует создание splineCharts
 # по горизонтальной оси принимаем QDateTime (xTimestamps)
@@ -39,6 +38,8 @@ def createSplineChart(data):
     chart.axes(Qt.Vertical)[0].setRange(0, 3)
 
     
+    
+
     
 
     # seriesFilter = [0, 3, 4, 6]
@@ -78,6 +79,48 @@ def createSplineChart(data):
 
     chartView = QtCharts.QChartView(chart)
     chartView.setRenderHint(QPainter.Antialiasing)
+
+    return chartView
+
+
+# createScatterChart(data) => QChartView
+# демонстрирует создание scatter chart
+# на примере рост/вес баскетболистов NBA 2018 года
+# data:
+# [ heights, weights ]
+def createScatterChart(data):
+
+    chart = QtCharts.QChart()
+    # chart.legend().hide()        
+    chart.setTitle("Spline chart (market shares)")
+
+    
+    series0 = QtCharts.QScatterSeries()
+    series0.setName("height / weight")
+    series0.setMarkerShape(QtCharts.QScatterSeries.MarkerShapeCircle)
+    series0.setMarkerSize(5.0)    
+
+    #series0.append([0, 6, 6, 4])
+
+    pointsList = list(map(lambda hw: QPointF(hw[0], hw[1]),
+                     zip(data[0], data[1])))
+
+    series0.append(pointsList)
+                       
+    chartView = QtCharts.QChartView(chart)    
+    chartView.setRenderHint(QPainter.Antialiasing)
+    
+    chart.addSeries(series0)
+    
+    chart.setTitle("Nba Players active as of 2018 height/weight")
+    
+    chart.createDefaultAxes()
+    
+    chart.setDropShadowEnabled(False)
+
+    chart.axes(Qt.Vertical)[0].setTitleText("Weight")
+    chart.axes(Qt.Horizontal)[0].setTitleText("Height")   
+  
 
     return chartView
     
