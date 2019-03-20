@@ -7,7 +7,7 @@ import pandas as pd
 """ импотируем pandas(это высокоуровневая Python библиотека для анализа и визуализации, в виде всевозможных графиков, данных)
 под псевдонимом pd"""
 from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            Qt, QTimeZone, Slot)# Slot
+                            Qt, QTimeZone, QPointF, Slot)
 """ 
 
 QAbstractTableModel-предоставляет абстрактную модель, его наследники-таблицы.
@@ -19,7 +19,9 @@ Qt-ПРОСТРАНСТВО ИМЕН, Содержит различные иде
 QTimeZone-Класс конвертирует между UTC и местным временем в конкретной временной зоне.
 Этот класс предоставляет калькулятор без сохранения состояния для преобразования часового пояса между UTC и местным временем в определенном часовом поясе.
 """
-from PySide2.QtGui import QColor, QPainter
+from PySide2.QtGui import (QColor, QPainter, QPen,
+ QLinearGradient,
+    QGradient)
 """ QColor- Цвета, основанные на значениях цветовых моделей RGB, HSV или CMYK
 QPainter-Выполняет низкоуровневое рисование на виджетах и других устройствах рисования
 
@@ -129,6 +131,8 @@ class CustomTableModel(QAbstractTableModel):#CustomTableModel
 
 
 class Widget(QWidget):
+
+       
     """ Класс QWidget является базовым для всех объектов пользовательского интерфейса
     Виджет - это элементарный объект пользовательского интерфейса:
     он получает события мыши, клавиатуры и другие события от оконной системы и рисует свое изображение на экране.
@@ -241,18 +245,24 @@ class Widget(QWidget):
         mainWidget.setLayout(main_layout)
 
         tabWidget = QTabWidget()
-        tabWidget.addTab(mainWidget, "travis scott")
+        #tabWidget.addTab(mainWidget, "travis scott")
 
         splineTab = ddv.charts.createSplineChart(splineChartData)
         tabWidget.addTab(splineTab, "spline chart")
 
-        areaTab = ddv.charts.createAreaChart(areaChartData)
-        tabWidget.addTab(areaTab, "area chart")
+        #areaTab = ddv.charts.createAreaChart(areaChartData)
+        #tabWidget.addTab(areaTab, "area chart")
         
 
         grid = QGridLayout()
         grid.addWidget(tabWidget)
 
+        # grid.addWidget(areaTab)
+  
+        #grid.addWidget(areaTab)
+
+        
+        
         self.setLayout(grid)
 
 

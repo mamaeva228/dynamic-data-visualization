@@ -41,8 +41,6 @@ def createSplineChart(data):
     
     
 
-    
-
     # seriesFilter = [0, 3, 4, 6]
     # seriesFilter = [0]
     seriesFilter = [3, 4, 6, 7, 9, 10]
@@ -172,7 +170,7 @@ def createAreaChart(data):
     #areaSeries = QtCharts.QAreaSeries(topLineSeries);
     areaSeries = QtCharts.QAreaSeries(series0, series1);
     #areaSeries.setName(name);
-    areaSeries.setName("name");
+    areaSeries.setName("name4535343534");
     
     pen = QPen(0x059605);
     pen.setWidth(3);
@@ -230,9 +228,6 @@ def createAreaChart(data):
     
     
     """
-
-    
-
 
     
     return chartView
