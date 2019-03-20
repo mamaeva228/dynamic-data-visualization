@@ -140,7 +140,8 @@ class Widget(QWidget):
     def __init__(self, data,
                  splineChartData,
                  areaChartData,
-                 scatterChartData):
+                 scatterChartData,
+                 pieChartData):
         QWidget.__init__(self)
 
         
@@ -246,16 +247,20 @@ class Widget(QWidget):
         mainWidget.setLayout(main_layout)
 
         tabWidget = QTabWidget()
-        tabWidget.addTab(mainWidget, "travis scott")
 
-        splineTab = ddv.charts.createSplineChart(splineChartData)
-        tabWidget.addTab(splineTab, "spline chart")
+        #tabWidget.addTab(mainWidget, "travis scott")
+
+        #splineTab = ddv.charts.createSplineChart(splineChartData)
+        #tabWidget.addTab(splineTab, "spline chart")
 
         #areaTab = ddv.charts.createAreaChart(areaChartData)
         #tabWidget.addTab(areaTab, "area chart")
 
-        scatterTab = ddv.charts.createScatterChart(scatterChartData)
-        tabWidget.addTab(scatterTab, "scatter chart")
+        #scatterTab = ddv.charts.createScatterChart(scatterChartData)
+        #tabWidget.addTab(scatterTab, "scatter chart")
+
+        pieTab = ddv.charts.createPieChart(pieChartData)
+        tabWidget.addTab(pieTab, "pie chart")
         
 
         grid = QGridLayout()
@@ -498,9 +503,12 @@ class MainWindow(QMainWindow):
 def runApp(data,
            splineChartData,
            areaChartData,
-           scatterChartData):
+           scatterChartData,
+           pieChartData):
     app = QApplication(sys.argv)
-    widget = Widget(data, splineChartData, areaChartData, scatterChartData) 
+    widget = Widget(data, splineChartData,
+                    areaChartData, scatterChartData,
+                    pieChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -526,13 +534,16 @@ if __name__ == "__main__":
 
     scatterChartData = ddv.csv.getScatterChartData("nba_player_data.csv")
 
+    pieChartData = ddv.csv.getPieChartData("refugees-by-asylum.csv")
 
+    
     
     #if False:
     if True:
         runApp(data,
                splineChartData,
                areaChartData,
-               scatterChartData)
+               scatterChartData,
+               pieChartData)
     
     

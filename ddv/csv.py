@@ -77,7 +77,7 @@ def feetInchToCm(s):
 
 
 # считывает данные для pieChart из refugees-by-asylum.csv
-def getPlotChartData(fname):
+def getPieChartData(fname):
     df = pd.read_csv(fname)
 
     df = df[["Country Name", "2017"]]

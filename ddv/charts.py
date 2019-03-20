@@ -4,6 +4,41 @@ from PySide2.QtGui import (QPainter, QPen, QLinearGradient,
     QGradient)
 
 
+
+# createPieChart(data) => QChartView
+# на примере беженцев по странам на 2017 год
+# data:
+# [ country_names, values ]
+def createPieChart(data):
+
+    chart = QtCharts.QChart()
+    # chart.legend().hide()        
+    chart.setTitle("Pie chart (refugees as of 2017)")
+
+    series = QtCharts.QPieSeries()
+
+    sliceList = list(map(lambda nv: QtCharts.QPieSlice(nv[0], nv[1]),
+                         zip(data[0], data[1])))
+    
+
+    series.append(sliceList)
+
+                       
+    for s in series.slices():
+        s.setLabelVisible()
+
+    chart = QtCharts.QChart();
+    chart.addSeries(series);
+    chart.setTitle("Simple piechart example");
+    # chart.legend()->hide();
+
+    chartView = QtCharts.QChartView(chart)
+    chartView.setRenderHint(QPainter.Antialiasing);
+  
+
+    return chartView
+
+
 # createSplineChart(self, data) => QChartView
 # демонстрирует создание splineCharts
 # по горизонтальной оси принимаем QDateTime (xTimestamps)
