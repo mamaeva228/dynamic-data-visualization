@@ -12,29 +12,18 @@ import ddv.csv
 
 if __name__ == "__main__":    
 
-    data = ddv.csv.getPlotChartData("refugees-by-asylum.csv")
-    
-    series = QtCharts.QPieSeries()
-
-    series.append("Jane", 1)
-    series.append("Joe", 2)
-    series.append("Andy", 3)
-    series.append("Barbara", 4)
-    series.append("Axel", 5)
-
-    slc = series.slices()[1]
-    slc.setExploded()
-    slc.setLabelVisible()
-    slc.setPen(QPen(Qt.darkGreen, 2))
-    slc.setBrush(Qt.green)
+   
+    # series = QtCharts.QPieSeries()
 
     chart = QtCharts.QChart();
-    chart.addSeries(series);
-    chart.setTitle("Simple piechart example");
+    # chart.addSeries(series);
+    
+    # chart.setTitle("Simple piechart example");
     # chart.legend()->hide();
 
-    chartView = QtCharts.QChartView(chart)
-    chartView.setRenderHint(QPainter.Antialiasing);
+    # chartView = QtCharts.QChartView(chart)
+    # chartView.setRenderHint(QPainter.Antialiasing);
+    
     """
     app = QApplication(sys.argv)
 
