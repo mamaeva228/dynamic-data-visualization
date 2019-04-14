@@ -1,0 +1,97 @@
+todo list:
+	найти графики
+		которые есть в QtCharts
+
+		Line and Spline Charts
+		Area and Scatter Charts
+		Bar Charts
+		Pie Charts
+		Box-and-Whiskers Charts
+		Candlestick Charts
+		Polar Charts
+
+		которые есть
+		Line и Bar Charts
+	постороить графики:
+		Spline Charts
+		Area "
+		Scatter "
+		Pie "
+		Box-and-Whiskers "
+		Candlestick "
+		Polar "
+
+
+21-02 todo list:
+	Spline Charts
+		+ понять, что это такое
+			отображается последовательность (serie) точек (x, y)
+			от первой до последней соединяются гладкой кривой (spline curve)
+		+ показать Арине как примеры c++ переводятся в python (PySide2)
+		? выбрать подходящие данные из нашего dataset для осмысленной визуализации Spline Chart-ами
+		- реализовать в нашем проекте
+
+		+ строим несколько series на одном charts
+			in: timestamps
+			serie1
+			serie2
+			..
+
+			name1
+			name2
+			..
+
+
+03/04 todo list:
+	Area "
+		- что это такое?
+			https://blog.datawrapper.de/area-charts/
+			https://www.fusioncharts.com/blog/line-charts-vs-area-charts/
+			https://www.fusioncharts.com/resources/chart-primers/area-chart
+		- в новом проекте сделать на python пример из c++
+	Scatter "
+		- что это такое?
+		- в новом проекте сделать на python пример из c++
+		- dataset:
+			nba players height / weight 
+	Pie "
+		- что это такое?
+		- в новом проекте сделать на python пример из c++
+			refugees by origin
+	Box-and-Whiskers "
+		- что это такое?
+		- в новом проекте сделать на python пример из c++
+
+		median
+
+		t1 t2 t3 t4 t5
+		5 5 0 4 5
+		mean = 19 / 5 = 3.8
+
+		0 4 5 5 5
+			^
+		median = 5
+
+
+
+	Candlestick "
+		- что это такое?
+		- в новом проекте сделать на python пример из c++
+	Polar "
+		- что это такое?
+			https://en.wikipedia.org/wiki/Radar_chart
+		- в новом проекте сделать на python пример из c++
+
+	https://en.wikipedia.org/wiki/Radar_chart
+	https://www.kaggle.com/drgilermo/nba-players-stats/version/2
+	https://data.worldbank.org/indicator/SM.POP.REFG.OR
+	https://medium.freecodecamp.org/https-medium-freecodecamp-org-best-free-open-data-sources-anyone-can-use-a65b514b0f2d
+
+	реализовать в нашем проекте:
+		1 window = 1 chart
+		tabs
+		1 window: many charts
+
+	задание Арине:
+		искать сценарии визуализаций с помощью этих чартов, понимать их и выписывать в этот todo-list со ссылками
+
