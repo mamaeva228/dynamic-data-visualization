@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    data = ddv.csv.getPlotChartData("refugees-by-asylum.csv")
+    data = ddv.csv.getPieChartData("refugees-by-asylum.csv")
     
     series = QtCharts.QPieSeries()
 
@@ -54,5 +54,8 @@ if __name__ == "__main__":
     window.setCentralWidget(chartView)
     window.resize(400, 300)
     window.show()
+
+    sys.exit(app.exec_())
+
     
 

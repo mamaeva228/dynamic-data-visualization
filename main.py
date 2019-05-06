@@ -141,7 +141,8 @@ class Widget(QWidget):
                  splineChartData,
                  areaChartData,
                  scatterChartData,
-                 pieChartData):
+                 pieChartData,
+                 bwChartData):
         QWidget.__init__(self)
 
         
@@ -261,6 +262,9 @@ class Widget(QWidget):
 
         pieTab = ddv.charts.createPieChart(pieChartData)
         tabWidget.addTab(pieTab, "pie chart")
+
+        bwTab = ddv.charts.createBwChart(bwChartData)
+        tabWidget.addTab(bwTab, "bw chart")
         
 
         grid = QGridLayout()
@@ -504,11 +508,12 @@ def runApp(data,
            splineChartData,
            areaChartData,
            scatterChartData,
-           pieChartData):
+           pieChartData,
+           bwChartData):
     app = QApplication(sys.argv)
     widget = Widget(data, splineChartData,
                     areaChartData, scatterChartData,
-                    pieChartData) 
+                    pieChartData, bwChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -536,6 +541,8 @@ if __name__ == "__main__":
 
     pieChartData = ddv.csv.getPieChartData("refugees-by-asylum.csv")
 
+    bwChartData = ddv.csv.getBoxWhiskersData()
+    
     
     
     #if False:
@@ -544,6 +551,7 @@ if __name__ == "__main__":
                splineChartData,
                areaChartData,
                scatterChartData,
-               pieChartData)
+               pieChartData,
+               bwChartData)
     
     
