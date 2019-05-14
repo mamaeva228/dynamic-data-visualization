@@ -3,6 +3,28 @@ import pandas as pd
 from PySide2.QtCore import (QDateTime)# Slot
 
 
+def readCandleStickFile(fname):    
+    res = []
+    
+    with open(fname) as fp:  
+       line = fp.readline()
+       line = fp.readline()
+       
+       line = fp.readline()
+       while line:
+           line = line.strip().split(" ")
+           d = []
+           d.append(int(line[0]))
+           d.extend([float(x) for x in line[1:]])
+           res.append(d)
+           
+           line = fp.readline()           
+
+    return res
+
+
+
+
 def readBoxWhiskersFile(fname):
     # df = pd.read_csv(fname)
 

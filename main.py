@@ -142,7 +142,8 @@ class Widget(QWidget):
                  areaChartData,
                  scatterChartData,
                  pieChartData,
-                 bwChartData):
+                 bwChartData,
+                 candlestickChartData):
         QWidget.__init__(self)
 
         
@@ -264,7 +265,10 @@ class Widget(QWidget):
         tabWidget.addTab(pieTab, "pie chart")
 
         bwTab = ddv.charts.createBwChart(bwChartData)
-        tabWidget.addTab(bwTab, "bw chart")
+        tabWidget.addTab(bwTab, "b w chart")
+
+        candlestickTab = ddv.charts.createCandlestickChart(candlestickChartData)
+        tabWidget.addTab(candlestickTab, "candlestick chart")
         
 
         grid = QGridLayout()
@@ -509,11 +513,13 @@ def runApp(data,
            areaChartData,
            scatterChartData,
            pieChartData,
-           bwChartData):
+           bwChartData,
+           candlestickChartData):
     app = QApplication(sys.argv)
     widget = Widget(data, splineChartData,
                     areaChartData, scatterChartData,
-                    pieChartData, bwChartData) 
+                    pieChartData, bwChartData,
+                    candlestickChartData) 
     """data-данные ф-ции read_data, тоесть 3 столбца из файла """
     
     window = MainWindow(widget)
@@ -542,6 +548,9 @@ if __name__ == "__main__":
     pieChartData = ddv.csv.getPieChartData("refugees-by-asylum.csv")
 
     bwChartData = ddv.csv.getBoxWhiskersData()
+
+    candlestickChartData = ddv.csv.readCandleStickFile("acme_data.txt")
+
     
     
     
@@ -552,6 +561,7 @@ if __name__ == "__main__":
                areaChartData,
                scatterChartData,
                pieChartData,
-               bwChartData)
+               bwChartData,
+               candlestickChartData)
     
     
