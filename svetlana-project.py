@@ -3,9 +3,27 @@ from PySide2.QtWidgets import QMainWindow, QApplication, QWidget
 
 from PySide2.QtWidgets import QAction
 
-from PySide2.QtWidgets import QDockWidget, QListWidget
+from PySide2.QtWidgets import QDockWidget, QListWidget, QTabWidget, QLabel
+
+from PySide2.QtWidgets import QListView
+
+
+from PySide2.QtGui import QStandardItemModel, QStandardItem
+
+from PySide2.QtWidgets import QGridLayout
+
+from PySide2.QtGui import QImageReader, QIcon
+
 
 from PySide2.QtCore import Qt
+
+
+# <div>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.flaticon.com/authors/egor-rumyantsev" title="Egor Rumyantsev">Egor Rumyantsev</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+
 
 # from PySide2.QtCore import QObject, SIGNAL
 
@@ -497,59 +515,153 @@ import copy
 ##        self.TabW.removeTab(self.TabW.currentIndex())
 ##
 
+
+class TabItemModel(QStandardItem):
+    def __init__(self):
+        super(TabItemModel, self).__init__()
+
+        self.widget = None
+        self.tab = None
+
+class ChartItemModel(TabItemModel):
+    def __init__(self):
+        super(ChartItemModel, self).__init__()
+
+        self.setIcon(QIcon('icons/chart.svg'))
+        self.setEditable(False)
+
+        self.widget = None
+        self.tab = None
+
+class TableItemModel(TabItemModel):
+    def __init__(self):
+        super(TableItemModel, self).__init__()
+
+        self.setIcon(QIcon('icons/table.svg'))
+        self.setEditable(False)
+
+        self.widget = None
+        self.tab = None
+
+
+class DashboardItemModel(TabItemModel):
+    def __init__(self):
+        super(DashboardItemModel, self).__init__()
+
+        self.setIcon(QIcon('icons/dashboard.svg'))
+        self.setEditable(False)
+
+        self.widget = None
+        self.tab = None
+
 class MainWindowV2(QMainWindow):
 
     def newChart(self):
+        item = ChartItemModel()
+        item.setText('New Chart')
+        self.model.appendRow(item)
         pass
 
     def newTable(self):
+        item = ChartItemModel()
+        item.setText('New Table')
+        self.model.appendRow(item)
         pass
 
     def newDashboard(self):
+        item = ChartItemModel()
+        item.setText('New Dashboard')
+        self.model.appendRow(item)
         pass
 
     def closeTab(self):
         pass
     
     def createActions(self):
-        self.newChartAction = QAction("New Chart", self)
+        self.newChartAction = QAction("New Chart", self,
+                                      icon = QIcon('icons/chart.svg'))        
         self.newChartAction.triggered.connect(self.newChart)
 
-        self.newTableAction = QAction("New Table", self)
+        self.newTableAction = QAction("New Table", self,
+                                      icon = QIcon('icons/table.svg'))        
         self.newTableAction.triggered.connect(self.newTable)
 
-        self.newDashboardAction = QAction("New Dashboard", self)
+        self.newDashboardAction = QAction("New Dashboard", self,
+                                      icon = QIcon('icons/dashboard.svg'))        
         self.newDashboardAction.triggered.connect(self.newDashboard)
 
-        self.closeTabAction = QAction("Close Tab", self)
+        self.closeTabAction = QAction("Close Tab", self,
+                                      icon = QIcon('icons/close.svg'))        
         self.closeTabAction.triggered.connect(self.closeTab)
     
     def __init__(self):
         super(MainWindowV2, self).__init__()
 
+        self.model = QStandardItemModel(self)
+
+        
+        
+
+        
+
+        
+
+        
+
+
+##        self.arr_sheet=[]
+##        self.arr_Dash=[] #ТАМ ГДЕ ДОЛЖНЫ МЕНЯТЬСЯ ГРАФИКИ НА ДАШБОРДЕ ЕСЛИ ИЗМЕНИОИСТЬ НА SHEET У МЕНЯ СТОИТ self.arr_Dash[0] ПЕРЕМЕНИТЬ НА ФОР ПО ВСЕМ ДАШБОРДАМ ТК ГРАФИКИ НА ВСЕХ(!) ДОЛЖНЫ ИЗМЕНИТЬСЯ
+##        self.arr_Tab=[]
+
+        useTab = False
+
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
 
+        
+        self.tabWidget = QTabWidget()
+        # self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setTabPosition(QTabWidget.South)
+        self.tabWidget.setTabsClosable(True) # можно премещать вкладки
+        self.tabWidget.setMovable(True) # но пока по нажатию ничего не происходит
+
+        if useTab:
+
+            self.cwGrid = QGridLayout(self.centralWidget)
+            self.cwGrid.addWidget(self.tabWidget, 0, 0)
+            # cwGrid.addWidget(QLabel("mudak"), 0, 0)
+            self.centralWidget.setLayout(cwGrid)
+            # self.tabWidget.hide()
+            
+
         # summerfield "Rapid GUI Programming" ch6
         logDockWidget = QDockWidget("Tabs", self)
+        logDockWidget.setTitleBarWidget(QWidget())
+
+        # logDockWidget = QDockWidget(self)
         logDockWidget.setObjectName("LogDockWidget")
         logDockWidget.setAllowedAreas(Qt.LeftDockWidgetArea |
                                       Qt.RightDockWidgetArea)
         logDockWidget.setFeatures(QDockWidget.DockWidgetMovable)
         # logDockWidget.setMinimumSize(100, 0)
                 
-        self.navListWidget = QListWidget()
+        self.navListView = QListView()
+        self.navListView.setModel(self.model)
 
-        logDockWidget.setWidget(self.navListWidget)
+        logDockWidget.setWidget(self.navListView)
         self.addDockWidget(Qt.LeftDockWidgetArea, logDockWidget)
 
         self.createActions()
 
         tabsToolbar = self.addToolBar("Tabs")
         tabsToolbar.setObjectName("tabsToolBar")
+        tabsToolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        
         for action in [self.newChartAction, self.newTableAction,
                        self.newDashboardAction, self.closeTabAction]:
             tabsToolbar.addAction(action)
+
+
         
         
         
@@ -563,7 +675,7 @@ if  __name__== "__main__":
     # window = MyWindow() #Создаем экземпляр класса
     window = MainWindowV2()
     window.setWindowTitle("ООП-стиль создания окна")
-    window.resize(600, 400)
+    window.resize(900, 600)
     window.show()   
     
     
