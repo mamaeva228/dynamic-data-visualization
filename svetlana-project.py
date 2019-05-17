@@ -3,14 +3,18 @@ from PySide2.QtWidgets import QMainWindow, QApplication, QWidget
 
 from PySide2.QtWidgets import QAction
 
-from PySide2.QtWidgets import QDockWidget, QListWidget, QTabWidget, QLabel
+from PySide2.QtWidgets import QDockWidget, QListWidget, QTabWidget, QLabel, QLineEdit
+from PySide2.QtWidgets import QListView, QGroupBox, QComboBox, QStackedWidget, QSpacerItem
+from PySide2.QtWidgets import QPushButton
+from PySide2.QtWidgets import QFileDialog
 
-from PySide2.QtWidgets import QListView
 
+
+from PySide2.QtCore import QStringListModel
 
 from PySide2.QtGui import QStandardItemModel, QStandardItem
 
-from PySide2.QtWidgets import QGridLayout
+from PySide2.QtWidgets import QGridLayout, QVBoxLayout
 
 from PySide2.QtGui import QImageReader, QIcon
 
@@ -22,7 +26,13 @@ from PySide2.QtCore import Qt
 # <div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 # <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 # <div>Icons made by <a href="https://www.flaticon.com/authors/egor-rumyantsev" title="Egor Rumyantsev">Egor Rumyantsev</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-
+#<div>Icons made by <a href="https://www.flaticon.com/authors/situ-herrera" title="Situ Herrera">Situ Herrera</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+# <div>Icons made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+#<div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+#<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+#<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 
 
 # from PySide2.QtCore import QObject, SIGNAL
@@ -43,6 +53,7 @@ import sys
 import argparse
 import pandas as pd
 import copy
+import numpy as np
 
 
 ##class Graphic(QWidget):#сделать тут ф-цию добавить графики хотя вроде и правильно, надо както сделать чтобы можно было удалить график и длобавить
@@ -516,6 +527,260 @@ import copy
 ##
 
 
+
+# basic layouts example
+# https://doc.qt.io/qt-5/qtwidgets-layouts-basiclayouts-example.html
+
+# using stretch to fill the empty space in a qvboxlayout
+# https://forum.qt.io/topic/71259/adding-qgridlayout-to-a-qvboxlayout/8
+
+
+class LineChartWidget(QWidget):
+    def __init__(self, model, parent=None):
+        super(LineChartWidget, self).__init__(parent)
+
+        self.model = model
+
+        grid = QGridLayout(self)
+
+        grid.addWidget(QLabel("kadum"), 0, 0)
+
+        self.setLayout(grid)
+
+
+class BarChartWidget(QWidget):
+
+    def loadDataset(self, fileName):
+        self.fileName = fileName
+        df = pd.read_csv(fileName)
+        self.model.dataset = df
+
+        self.datasetLabel.setText(self.fileName)
+
+     #   print(df.head())
+
+        dfNumeric = df.select_dtypes(include=[np.number])
+
+        numericColumns = QStringListModel(dfNumeric.columns)
+        self.xAxisComboBox.setModel(numericColumns)
+        self.yAxisComboBox.setModel(numericColumns)
+        
+        
+        
+
+    def chooseDataset(self):
+        dlg = QFileDialog()
+        dlg.setAcceptMode(QFileDialog.AcceptOpen)
+        dlg.setFileMode(QFileDialog.AnyFile)
+        dlg.setNameFilter("Csv files(*.csv)")
+                
+        if dlg.exec_():            
+            self.loadDataset(dlg.selectedFiles()[0])            
+        else:
+            pass
+
+    def createChart(self):
+        pass
+    
+    def __init__(self, model, parent=None):
+        super(BarChartWidget, self).__init__(parent)
+
+        self.model = model
+
+        grid = QGridLayout(self)
+
+# https://stackoverflow.com/questions/35946289/qt-qgridlayout-setrowstretch-not-working
+
+        settingsGrid = QGridLayout(self)
+
+        settingsGrid.addWidget(QLabel("Dataset"), 0, 0)
+
+        self.datasetLabel = QLabel("no dataset")
+        
+        settingsGrid.addWidget(self.datasetLabel, 1, 0, 1, 2)
+        settingsGrid.addWidget(QLabel("X Axis"), 2, 0)
+        settingsGrid.addWidget(QLabel("Y Axis"), 3, 0)
+
+        dataSetButton = QPushButton("Choose dataset", self)
+        dataSetButton.clicked.connect(self.chooseDataset)
+
+        
+        self.xAxisComboBox = QComboBox(self)
+        self.yAxisComboBox = QComboBox(self)
+        
+        settingsGrid.addWidget(dataSetButton, 0, 1)
+        settingsGrid.addWidget(self.xAxisComboBox, 2, 1)
+        settingsGrid.addWidget(self.yAxisComboBox, 3, 1)
+
+        # settingsGrid.addWidget(QLabel("4"), 4, 1)
+
+        createChartButton = QPushButton("Create Chart", self)
+        createChartButton.clicked.connect(self.createChart)
+        settingsGrid.addWidget(createChartButton, 4, 1)
+
+        
+        
+        settingsGrid.setRowStretch(5, 10)
+
+        grid.addLayout(settingsGrid, 0, 0)
+
+        
+        self.chart = QStackedWidget()        
+        grid.addWidget(self.chart, 0, 1)
+
+        # self.chart.addWidget(QLabel("skka"))
+
+        
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 1)
+
+        self.setLayout(grid)
+
+        self.loadDataset("all_hour.csv")
+          
+        
+
+class ChartModel():
+    def __init__(self):
+        pass
+
+    def createChart():
+        return QLabel("generic")
+    
+
+class LineChartModel(ChartModel):
+    def __init__(self):
+        super(LineChartModel, self).__init__()
+        pass
+
+    def createChart():
+        return QLabel("line")
+
+
+    
+class BarChartModel(ChartModel):
+    def __init__(self):
+        super(BarChartModel, self).__init__()
+        self.dataset = None
+        self.xAxis = None
+        self.yAxis = None
+        self.chart = False
+        pass
+
+    def createChart():
+        self.chart = True
+        return QLabel("bar")    
+        
+
+class ChartWidget(QWidget):
+
+    
+    def changeType(self):        
+        if self.stackedWidget.count() != 0:
+            self.stackedWidget.removeWidget(self.stackedWidget.widget(0))
+
+        row = self.typeComboBox.currentIndex()
+        idx = self.typeComboBox.model().index(row, 0)
+        model = self.typeComboBox.model().itemFromIndex(idx)
+        t = model.data()
+
+        if t == BarChartModel:
+            self.chartModel = BarChartModel()
+            widget = BarChartWidget(self.chartModel, self)
+            self.stackedWidget.addWidget(widget)
+        elif t == LineChartModel:
+            self.chartModel = LineChartModel()
+            widget = LineChartWidget(self.chartModel, self)
+            self.stackedWidget.addWidget(widget)
+                       
+                    
+    def updateText(self):
+        name = self.nameLineEdit.text()
+        self.model.setText(name)
+        ind = self.tabWidget.indexOf(self)
+        self.tabWidget.setTabText(ind, name)
+    
+    def __init__(self, model, tabWidget, parent=None):
+        super(ChartWidget, self).__init__(parent)
+
+        self.model = model
+        self.tabWidget = tabWidget
+
+        layout = QVBoxLayout(self)
+
+        chartGroupBox = QGroupBox("General Settings")
+        
+        grid = QGridLayout(self)
+        grid.addWidget(QLabel("Name"), 0, 0)
+        self.nameLineEdit = QLineEdit()
+        self.nameLineEdit.setText(model.text())
+        self.nameLineEdit.textChanged.connect(self.updateText)
+
+        
+        grid.addWidget(self.nameLineEdit, 0, 1)
+
+        self.typeComboBox = QComboBox()
+
+        self.typeComboBox.currentIndexChanged.connect(self.changeType)        
+       
+        grid.addWidget(self.typeComboBox, 1, 1)
+
+        chartGroupBox.setLayout(grid)                
+        
+        layout.addWidget(chartGroupBox)
+
+        self.chartWidget = QWidget()
+        layout.addWidget(self.chartWidget)
+
+        # using to dynamically add and remove chart settings/preview widgets
+        self.stackedWidget = QStackedWidget(self)
+        layout.addWidget(self.stackedWidget)
+        
+        # layout.addStretch()
+        self.setLayout(layout)
+
+        # adding type values here is a violation of object-oriented design
+        # a more polymorphic implementation is desirable
+        chartTypesLst = [('Bar Chart', "icons/chart-types/bar-chart.svg", BarChartModel),
+             ('Box Plot', "icons/chart-types/box-plot.svg", None),
+             ('Candlestick Chart', "icons/chart-types/candlestick-chart.svg", None),
+             ('Line Chart', "icons/chart-types/line-chart.svg", LineChartModel),
+             ('Pie Chart', "icons/chart-types/pie-chart.svg", None),
+             ('Scatter Chart', "icons/chart-types/scatter-chart.svg", None),
+             ('Spline Chart', "icons/chart-types/spline-chart.svg", None)]
+        
+        s = QStandardItemModel()
+        for ct in chartTypesLst:
+            item = QStandardItem(ct[0])
+            item.setIcon(QIcon(ct[1]))
+            item.setData(ct[2])
+                          
+            s.appendRow(item)            
+        self.typeComboBox.setModel(s)
+
+class TableWidget(QWidget):
+    def __init__(self, model, parent=None):
+        super(TableWidget, self).__init__(parent)
+
+        self.model = model
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("kadum3"))
+
+        self.setLayout(layout)        
+
+class DashboardWidget(QWidget):
+    def __init__(self, model, parent=None):
+        super(DashboardWidget, self).__init__(parent)
+
+        self.model = model
+
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("kadum3"))
+
+        self.setLayout(layout)            
+
+
 class TabItemModel(QStandardItem):
     def __init__(self):
         super(TabItemModel, self).__init__()
@@ -530,8 +795,11 @@ class ChartItemModel(TabItemModel):
         self.setIcon(QIcon('icons/chart.svg'))
         self.setEditable(False)
 
-        self.widget = None
         self.tab = None
+        
+        self.dataset = None
+
+        
 
 class TableItemModel(TabItemModel):
     def __init__(self):
@@ -540,7 +808,6 @@ class TableItemModel(TabItemModel):
         self.setIcon(QIcon('icons/table.svg'))
         self.setEditable(False)
 
-        self.widget = None
         self.tab = None
 
 
@@ -551,7 +818,6 @@ class DashboardItemModel(TabItemModel):
         self.setIcon(QIcon('icons/dashboard.svg'))
         self.setEditable(False)
 
-        self.widget = None
         self.tab = None
 
 class MainWindowV2(QMainWindow):
@@ -560,22 +826,65 @@ class MainWindowV2(QMainWindow):
         item = ChartItemModel()
         item.setText('New Chart')
         self.model.appendRow(item)
+
+        widget = ChartWidget(item, self.tabWidget, self)
+        self.tabWidget.addTab(widget, "New Chart")
+
+        item.tab = widget        
+        
         pass
 
     def newTable(self):
-        item = ChartItemModel()
+        item = TableItemModel()
         item.setText('New Table')
         self.model.appendRow(item)
+
+        widget = TableWidget(item, self)
+        self.tabWidget.addTab(widget, "New Table")
+
+        item.tab = widget     
+        
         pass
 
     def newDashboard(self):
-        item = ChartItemModel()
+        item = DashboardItemModel()
         item.setText('New Dashboard')
         self.model.appendRow(item)
+
+
+        widget = DashboardWidget(item, self)
+        self.tabWidget.addTab(widget, "New Dashboard")
+
+        item.tab = widget     
+        
         pass
 
     def closeTab(self):
-        pass
+                
+        indexes = self.navListView.selectionModel().selectedIndexes()
+        if indexes:
+            ind = indexes[0]
+            model = self.navListView.model().itemFromIndex(ind)                        
+            self.navListView.model().removeRow(ind.row())
+
+            self.tabWidget.removeTab(self.tabWidget.indexOf(model.tab))
+            
+
+    def closeTabFromTabWidget(self, i):
+
+        widget = self.tabWidget.widget(i)
+        modelIndex = widget.model.index()
+
+        self.navListView.model().removeRow(modelIndex.row())
+        self.tabWidget.removeTab(self.tabWidget.indexOf(widget.model.tab))
+            
+
+    # создаём объекты QAction,
+    # их удобно вешать на Toolbars, Menus, Buttons
+
+    # QActions - действия - их реализации отделены от того, как именно они вызываются
+    # (по button click, toolbar click, menu item click, и так далее)
+    # это позволяет легко их вешать в несколько мест
     
     def createActions(self):
         self.newChartAction = QAction("New Chart", self,
@@ -593,46 +902,34 @@ class MainWindowV2(QMainWindow):
         self.closeTabAction = QAction("Close Tab", self,
                                       icon = QIcon('icons/close.svg'))        
         self.closeTabAction.triggered.connect(self.closeTab)
+
+
+    def setActiveTab(self):
+        selectedModel = self.model.itemFromIndex(self.navListView.selectedIndexes()[0])
+        self.tabWidget.setCurrentWidget(selectedModel.tab)
+        
+        
     
     def __init__(self):
         super(MainWindowV2, self).__init__()
 
-        self.model = QStandardItemModel(self)
 
+        # self.model - вместо трёх отдельных lists (arr_sheet, arr_Dash, arr_Tab)
+        # в QStandardItemModel будем append-ить
+        # один из трёх классов, наследующихся от QStandardItem
         
-        
+        self.model = QStandardItemModel(self)                
 
-        
-
-        
-
-        
-
-
-##        self.arr_sheet=[]
-##        self.arr_Dash=[] #ТАМ ГДЕ ДОЛЖНЫ МЕНЯТЬСЯ ГРАФИКИ НА ДАШБОРДЕ ЕСЛИ ИЗМЕНИОИСТЬ НА SHEET У МЕНЯ СТОИТ self.arr_Dash[0] ПЕРЕМЕНИТЬ НА ФОР ПО ВСЕМ ДАШБОРДАМ ТК ГРАФИКИ НА ВСЕХ(!) ДОЛЖНЫ ИЗМЕНИТЬСЯ
-##        self.arr_Tab=[]
-
-        useTab = False
-
-        self.centralWidget = QWidget(self)
-        self.setCentralWidget(self.centralWidget)
-
-        
-        self.tabWidget = QTabWidget()
-        # self.tabWidget.setCurrentIndex(0)
+               
+        self.tabWidget = QTabWidget(self)        
         self.tabWidget.setTabPosition(QTabWidget.South)
         self.tabWidget.setTabsClosable(True) # можно премещать вкладки
         self.tabWidget.setMovable(True) # но пока по нажатию ничего не происходит
 
-        if useTab:
-
-            self.cwGrid = QGridLayout(self.centralWidget)
-            self.cwGrid.addWidget(self.tabWidget, 0, 0)
-            # cwGrid.addWidget(QLabel("mudak"), 0, 0)
-            self.centralWidget.setLayout(cwGrid)
-            # self.tabWidget.hide()
-            
+        self.tabWidget.tabCloseRequested.connect(self.closeTabFromTabWidget)
+        
+        self.setCentralWidget(self.tabWidget)
+                    
 
         # summerfield "Rapid GUI Programming" ch6
         logDockWidget = QDockWidget("Tabs", self)
@@ -660,6 +957,14 @@ class MainWindowV2(QMainWindow):
         for action in [self.newChartAction, self.newTableAction,
                        self.newDashboardAction, self.closeTabAction]:
             tabsToolbar.addAction(action)
+
+
+        self.navListView.selectionModel().selectionChanged.connect(self.setActiveTab)
+
+
+        # easy start
+        self.newChart()
+        
 
 
         
