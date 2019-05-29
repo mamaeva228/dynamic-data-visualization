@@ -2,6 +2,7 @@ from PySide2.QtCharts import QtCharts
 from PySide2.QtCore import (Qt, QPointF, QDateTime)
 from PySide2.QtGui import (QPainter, QPen, QLinearGradient,
     QGradient)
+import PySide2.QtWidgets
 
 import statistics
 
@@ -176,7 +177,8 @@ def createSplineChart(data):
 
     # seriesFilter = [0, 3, 4, 6]
     # seriesFilter = [0]
-    seriesFilter = [3, 4, 6, 7, 9, 10]
+    # seriesFilter = [3, 4, 6, 7, 9, 10]
+    seriesFilter = [3, 4]
 
     valuesToDraw = [data[1][i] for i in seriesFilter]
     namesToDraw = [data[2][i] for i in seriesFilter]        
@@ -189,6 +191,11 @@ def createSplineChart(data):
     
         series = QtCharts.QSplineSeries()
         series.setName(name)
+
+        
+        c1 = PySide2.QtWidgets.QColorDialog.getColor(
+            options=PySide2.QtWidgets.QColorDialog.DontUseNativeDialog)
+        series.setColor(c1)
 
         n = len(values)
 

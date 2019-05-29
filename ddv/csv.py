@@ -129,6 +129,9 @@ def getScatterChartData(fname):
 
     weights = map(lambda w : w * lbsToKg, weights)
 
+    
+    
+
     return list(map(feetInchToCm, heights)), list(weights)
 
 def feetInchToCm(s):
