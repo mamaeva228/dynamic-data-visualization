@@ -30,6 +30,8 @@ from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QVBoxLayout, 
                                QHeaderView,
                                QMainWindow, QSizePolicy, QTableView, QWidget, QSplitter,
                                QTabWidget)
+
+import PySide2.QtWidgets
 """ 
 Класс QAction предоставляет абстрактное действие пользовательского интерфейса, которое может быть вставлено в виджеты.
 Класс QApplication руководит управляющей логикой ГПИ(граф. пользоват. интерфейс) и основными настройками
@@ -291,9 +293,12 @@ class Widget(QWidget):
         
     def createBarCharts(self, x, y1, y2):
         barSet1 = QtCharts.QBarSet("Magnitude")
+        # c1 = PySide2.QtWidgets.QColorDialog.getColor()
+        barSet1.setColor(Qt.white)
         barSet1.append(y1)
 
         barSet2 = QtCharts.QBarSet("Depths")
+        barSet2.setColor(Qt.magenta)
         barSet2.append(y2)
         
         barSeries1 = QtCharts.QBarSeries()
