@@ -18,7 +18,7 @@ def createCandlestickChart(data):
 
     for x in data:            
     
-        category = x[0]
+        category = float(x[0])
         csSet = QtCharts.QCandlestickSet(category)
         csSet.setOpen(x[1])
         csSet.setHigh(x[2])
